@@ -53,7 +53,7 @@ public class HEREPositioningSimulator {
     private LocationSimulator createLocationSimulator(LocationListener locationListener, Route route) {
         LocationSimulatorOptions locationSimulatorOptions = new LocationSimulatorOptions();
         locationSimulatorOptions.speedFactor = 2;
-        locationSimulatorOptions.notificationInterval = Duration.ofMillis(500);
+        locationSimulatorOptions.notificationIntervalInMilliseconds = 500;
 
         LocationSimulator locationSimulator;
 

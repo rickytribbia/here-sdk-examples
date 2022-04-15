@@ -184,6 +184,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         if (app != null) {
+            // Because of hardware back button tap, clearMap() call was added to clean entire map and stop navigation
+            app.clearMap();
             app.stopLocating();
         }
         mapView.onDestroy();

@@ -149,7 +149,7 @@ public class App {
     }
 
     private void showRouteDetails(Route route, boolean isSimulated) {
-        long estimatedTravelTimeInSeconds = route.getDuration().getSeconds();
+        long estimatedTravelTimeInSeconds = route.getDurationInSeconds();
         int lengthInMeters = route.getLengthInMeters();
 
         String routeDetails =

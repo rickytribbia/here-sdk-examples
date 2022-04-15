@@ -6,12 +6,14 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <!-- Needed for HERE positioning. -->
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" android:maxSdkVersion="22" />
+    <uses-permission
+        android:name="android.permission.READ_PHONE_STATE"
+        android:maxSdkVersion="22" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
@@ -23,11 +25,16 @@
         android:theme="@style/AppTheme">
 
         <!-- Set your credentials for the HERE SDK. -->
-        <meta-data android:name="com.here.sdk.access_key_id" android:value="YOUR_ACCESS_KEY_ID" />
-        <meta-data android:name="com.here.sdk.access_key_secret" android:value="YOUR_ACCESS_KEY_SECRET" />
+        <meta-data
+            android:name="com.here.sdk.access_key_id"
+            android:value="YOUR_ACCESS_KEY_ID" />
+        <meta-data
+            android:name="com.here.sdk.access_key_secret"
+            android:value="YOUR_ACCESS_KEY_SECRET" />
 
-        <activity android:name=".MainActivity"
-                  android:exported="true">
+        <activity
+            android:name=".StartActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
@@ -35,6 +42,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".MainActivity" />
         <activity android:name=".ConsentStateActivity" />
     </application>
 

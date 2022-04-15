@@ -78,11 +78,8 @@ import com.here.sdk.routing.ManeuverAction;
 import com.here.sdk.routing.RoadTexts;
 import com.here.sdk.routing.RoadType;
 import com.here.sdk.routing.Route;
-import com.here.sdk.routing.RoutingError;
 import com.here.sdk.trafficawarenavigation.DynamicRoutingEngine;
 import com.here.sdk.trafficawarenavigation.DynamicRoutingEngineOptions;
-import com.here.sdk.trafficawarenavigation.DynamicRoutingListener;
-import com.here.time.Duration;
 
 import java.util.List;
 import java.util.Locale;
@@ -144,9 +141,9 @@ public class NavigationExample {
     private void createDynamicRoutingEngine() {
         DynamicRoutingEngineOptions dynamicRoutingOptions = new DynamicRoutingEngineOptions();
         // We want an update for each poll iteration, so we specify 0 difference.
-        dynamicRoutingOptions.minTimeDifference = Duration.ofSeconds(0);
+        dynamicRoutingOptions.minTimeDifferenceInSeconds = 0;
         dynamicRoutingOptions.minTimeDifferencePercentage = 0.0;
-        dynamicRoutingOptions.pollInterval = Duration.ofMinutes(5);
+        dynamicRoutingOptions.pollIntervalInMinutes = 5;
 
         try {
             // With the dynamic routing engine you can poll the HERE backend services to search for routes with less traffic.
@@ -167,7 +164,7 @@ public class NavigationExample {
                 // sectionProgressList is guaranteed to be non-empty.
                 SectionProgress lastSectionProgress = sectionProgressList.get(sectionProgressList.size() - 1);
                 Log.d(TAG, "Distance to destination in meters: " + lastSectionProgress.remainingDistanceInMeters);
-                Log.d(TAG, "Traffic delay ahead in seconds: " + lastSectionProgress.trafficDelay.getSeconds());
+                Log.d(TAG, "Traffic delay ahead in seconds: " + lastSectionProgress.trafficDelayInSeconds);
 
                 // Contains the progress for the next maneuver ahead and the next-next maneuvers, if any.
                 List<ManeuverProgress> nextManeuverList = routeProgress.maneuverProgress;
@@ -199,7 +196,7 @@ public class NavigationExample {
 
                 previousManeuverIndex = nextManeuverIndex;
 
-                 if (lastMapMatchedLocation != null) {
+                if (lastMapMatchedLocation != null) {
                     // Update the route based on the current location of the driver.
                     // We periodically want to search for better traffic-optimized routes.
                     dynamicRoutingEngine.updateCurrentLocation(lastMapMatchedLocation, routeProgress.sectionIndex);
@@ -223,17 +220,14 @@ public class NavigationExample {
             public void onMilestoneStatusUpdated(@NonNull Milestone milestone, @NonNull MilestoneStatus milestoneStatus) {
                 if (milestone.waypointIndex != null && milestoneStatus == MilestoneStatus.REACHED) {
                     Log.d(TAG, "A user-defined waypoint was reached, index of waypoint: " + milestone.waypointIndex);
-                    Log.d(TAG,"Original coordinates: " + milestone.originalCoordinates);
-                }
-                else if (milestone.waypointIndex != null && milestoneStatus == MilestoneStatus.MISSED) {
+                    Log.d(TAG, "Original coordinates: " + milestone.originalCoordinates);
+                } else if (milestone.waypointIndex != null && milestoneStatus == MilestoneStatus.MISSED) {
                     Log.d(TAG, "A user-defined waypoint was missed, index of waypoint: " + milestone.waypointIndex);
-                    Log.d(TAG,"Original coordinates: " + milestone.originalCoordinates);
-                }
-                else if (milestone.waypointIndex == null && milestoneStatus == MilestoneStatus.REACHED) {
+                    Log.d(TAG, "Original coordinates: " + milestone.originalCoordinates);
+                } else if (milestone.waypointIndex == null && milestoneStatus == MilestoneStatus.REACHED) {
                     // For example, when transport mode changes due to a ferry a system-defined waypoint may have been added.
                     Log.d(TAG, "A system-defined waypoint was reached at: " + milestone.mapMatchedCoordinates);
-                }
-                else if (milestone.waypointIndex == null && milestoneStatus == MilestoneStatus.MISSED) {
+                } else if (milestone.waypointIndex == null && milestoneStatus == MilestoneStatus.MISSED) {
                     // For example, when transport mode changes due to a ferry a system-defined waypoint may have been added.
                     Log.d(TAG, "A system-defined waypoint was missed at: " + milestone.mapMatchedCoordinates);
                 }
@@ -287,7 +281,7 @@ public class NavigationExample {
 
                 Double speed = currentNavigableLocation.originalLocation.speedInMetersPerSecond;
                 Double accuracy = currentNavigableLocation.originalLocation.speedAccuracyInMetersPerSecond;
-                Log.d(TAG, "Driving speed (m/s): " + speed + "plus/minus an accuracy of: " +accuracy);
+                Log.d(TAG, "Driving speed (m/s): " + speed + "plus/minus an accuracy of: " + accuracy);
             }
         });
 
@@ -438,7 +432,7 @@ public class NavigationExample {
                 for (TruckRestrictionWarning truckRestrictionWarning : list) {
 
                     if (truckRestrictionWarning.distanceType == DistanceType.AHEAD) {
-                        Log.d(TAG, "TruckRestrictionWarning ahead in: "+ truckRestrictionWarning.distanceInMeters + " meters.");
+                        Log.d(TAG, "TruckRestrictionWarning ahead in: " + truckRestrictionWarning.distanceInMeters + " meters.");
                     } else if (truckRestrictionWarning.distanceType == DistanceType.PASSED) {
                         Log.d(TAG, "A restriction just passed.");
                     }
@@ -512,17 +506,17 @@ public class NavigationExample {
             // but not to the maneuver after the next maneuver, while the highly recommended lane also leads
             // to this next next maneuver.
             if (lane.recommendationState == LaneRecommendationState.RECOMMENDED) {
-                Log.d(TAG,"Lane " + laneNumber + " leads to next maneuver, but not to the next next maneuver.");
+                Log.d(TAG, "Lane " + laneNumber + " leads to next maneuver, but not to the next next maneuver.");
             }
 
             // If laneAssistance.lanesForNextNextManeuver is not empty, this lane leads also to the
             // maneuver after the next maneuver.
             if (lane.recommendationState == LaneRecommendationState.HIGHLY_RECOMMENDED) {
-                Log.d(TAG,"Lane " + laneNumber + " leads to next maneuver and eventually to the next next maneuver.");
+                Log.d(TAG, "Lane " + laneNumber + " leads to next maneuver and eventually to the next next maneuver.");
             }
 
             if (lane.recommendationState == LaneRecommendationState.NOT_RECOMMENDED) {
-                Log.d(TAG,"Do not take lane " + laneNumber + " to follow the route.");
+                Log.d(TAG, "Do not take lane " + laneNumber + " to follow the route.");
             }
 
             laneNumber++;
@@ -534,25 +528,25 @@ public class NavigationExample {
         // Note that all values can be null if no data is available.
 
         // The regular speed limit if available. In case of unbounded speed limit, the value is zero.
-        Log.d(TAG,"speedLimitInMetersPerSecond: " + speedLimit.speedLimitInMetersPerSecond);
+        Log.d(TAG, "speedLimitInMetersPerSecond: " + speedLimit.speedLimitInMetersPerSecond);
 
         // A conditional school zone speed limit as indicated on the local road signs.
-        Log.d(TAG,"schoolZoneSpeedLimitInMetersPerSecond: " + speedLimit.schoolZoneSpeedLimitInMetersPerSecond);
+        Log.d(TAG, "schoolZoneSpeedLimitInMetersPerSecond: " + speedLimit.schoolZoneSpeedLimitInMetersPerSecond);
 
         // A conditional time-dependent speed limit as indicated on the local road signs.
         // It is in effect considering the current local time provided by the device's clock.
-        Log.d(TAG,"timeDependentSpeedLimitInMetersPerSecond: " + speedLimit.timeDependentSpeedLimitInMetersPerSecond);
+        Log.d(TAG, "timeDependentSpeedLimitInMetersPerSecond: " + speedLimit.timeDependentSpeedLimitInMetersPerSecond);
 
         // A conditional non-legal speed limit that recommends a lower speed,
         // for example, due to bad road conditions.
-        Log.d(TAG,"advisorySpeedLimitInMetersPerSecond: " + speedLimit.advisorySpeedLimitInMetersPerSecond);
+        Log.d(TAG, "advisorySpeedLimitInMetersPerSecond: " + speedLimit.advisorySpeedLimitInMetersPerSecond);
 
         // A weather-dependent speed limit as indicated on the local road signs.
         // The HERE SDK cannot detect the current weather condition, so a driver must decide
         // based on the situation if this speed limit applies.
-        Log.d(TAG,"fogSpeedLimitInMetersPerSecond: " + speedLimit.fogSpeedLimitInMetersPerSecond);
-        Log.d(TAG,"rainSpeedLimitInMetersPerSecond: " + speedLimit.rainSpeedLimitInMetersPerSecond);
-        Log.d(TAG,"snowSpeedLimitInMetersPerSecond: " + speedLimit.snowSpeedLimitInMetersPerSecond);
+        Log.d(TAG, "fogSpeedLimitInMetersPerSecond: " + speedLimit.fogSpeedLimitInMetersPerSecond);
+        Log.d(TAG, "rainSpeedLimitInMetersPerSecond: " + speedLimit.rainSpeedLimitInMetersPerSecond);
+        Log.d(TAG, "snowSpeedLimitInMetersPerSecond: " + speedLimit.snowSpeedLimitInMetersPerSecond);
 
         // For convenience, this returns the effective (lowest) speed limit between
         // - speedLimitInMetersPerSecond
@@ -580,6 +574,13 @@ public class NavigationExample {
     }
 
     private void startDynamicSearchForBetterRoutes(Route route) {
+        /*
+            To test crash we comment this piece of code because it retains NavigationExample and the context of MainActivity referenced in it
+
+            We've also tried using this methods in stopNavigation() to remove delegate but this doens't work:
+            - dynamicRoutingEngine.setListener(null);
+            - dynamicRoutingEngine.stop();
+
         try {
             dynamicRoutingEngine.start(route, new DynamicRoutingListener() {
                 // Notifies on traffic-optimized routes that are considered better than the current route.
@@ -599,12 +600,13 @@ public class NavigationExample {
 
                 @Override
                 public void onRoutingError(@NonNull RoutingError routingError) {
-                    Log.d(TAG,"Error while dynamically searching for a better route: " + routingError.name());
+                    Log.d(TAG, "Error while dynamically searching for a better route: " + routingError.name());
                 }
             });
         } catch (DynamicRoutingEngine.StartException e) {
             throw new RuntimeException("Start of DynamicRoutingEngine failed. Is the RouteHandle missing?");
         }
+         */
     }
 
     public void stopNavigation() {
@@ -687,6 +689,24 @@ public class NavigationExample {
     }
 
     public void stopLocating() {
+        // Set to null all VisualNavigator listeners configured in setupListeners() method.
+        // With all of this reset operations to reset all listeners, native crash occur when hardware back button is pressed,
+        // We want to reset all listeners because MainActivity, NavigationExample and all related stuff must be deallocated after
+        // back operation.
+        visualNavigator.setRouteProgressListener(null);
+        visualNavigator.setDestinationReachedListener(null);
+        visualNavigator.setMilestoneStatusListener(null);
+        visualNavigator.setSpeedWarningListener(null);
+        visualNavigator.setSpeedLimitListener(null);
+        visualNavigator.setNavigableLocationListener(null);
+        visualNavigator.setRouteDeviationListener(null);
+        visualNavigator.setManeuverNotificationListener(null);
+        visualNavigator.setManeuverViewLaneAssistanceListener(null);
+        visualNavigator.setJunctionViewLaneAssistanceListener(null);
+        visualNavigator.setRoadAttributesListener(null);
+        visualNavigator.setTruckRestrictionsWarningListener(null);
+        visualNavigator.setRoadTextsListener(null);
+
         herePositioningProvider.stopLocating();
     }
 }
