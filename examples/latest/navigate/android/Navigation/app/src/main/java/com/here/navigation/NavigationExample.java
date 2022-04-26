@@ -707,6 +707,8 @@ public class NavigationExample {
         visualNavigator.setTruckRestrictionsWarningListener(null);
         visualNavigator.setRoadTextsListener(null);
 
+        visualNavigator.stopRendering();
+
         herePositioningProvider.stopLocating();
     }
 }
